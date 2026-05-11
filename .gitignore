@@ -1,0 +1,19 @@
+# Logs
+*.log
+
+# Compiled binaries
+play.exe
+*.obj
+*.pdb
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.*
+
+# OS
+desktop.ini
+Thumbs.db
+.DS_Store

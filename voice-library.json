@@ -1,0 +1,152 @@
+{
+  "voice": "Alejandra",
+  "provider": "Narakeet",
+  "format": "mp3",
+  "guidelines": {
+    "duration": "0.8-2.5 seconds per clip",
+    "tone": "warm, brief, calm, useful",
+    "naming": "Use numeric file names inside each intent folder: 1.mp3, 2.mp3, 3.mp3"
+  },
+  "intents": {
+    "notif": [
+      "Te toca.",
+      "Tengo una pregunta.",
+      "Cuando puedas, seguimos.",
+      "Necesito tu respuesta.",
+      "Hay algo para revisar.",
+      "Estoy lista para continuar.",
+      "Te leo.",
+      "Quedo atenta."
+    ],
+    "complete": [
+      "Listo.",
+      "Termine.",
+      "Ya quedo.",
+      "Trabajo completado.",
+      "Todo listo por aqui.",
+      "Ya esta resuelto.",
+      "Termine esta parte.",
+      "Quedo listo."
+    ],
+    "thinking": [
+      "Dame un momento.",
+      "Estoy revisando.",
+      "Voy a pensarlo.",
+      "Estoy mirando los detalles.",
+      "Un momento, por favor.",
+      "Estoy trabajando en eso.",
+      "Dejame verificar.",
+      "Estoy procesando la idea."
+    ],
+    "error": [
+      "Algo fallo.",
+      "No pude completar eso.",
+      "Hubo un problema.",
+      "Eso no salio bien.",
+      "Necesito revisar este error.",
+      "La accion no se pudo terminar.",
+      "Encontre un problema.",
+      "Esto requiere atencion."
+    ],
+    "permission": [
+      "Necesito permiso para continuar.",
+      "Me falta acceso a eso.",
+      "Puedes autorizar este paso.",
+      "Necesito tu aprobacion.",
+      "Este paso requiere permiso.",
+      "No tengo acceso suficiente.",
+      "Hace falta una autorizacion.",
+      "Puedo seguir cuando lo apruebes."
+    ],
+    "warning": [
+      "Ojo con esto.",
+      "Hay algo importante que revisar.",
+      "Conviene mirar esto antes de seguir.",
+      "Esto merece atencion.",
+      "Detecte una posible alerta.",
+      "Hay un detalle sensible.",
+      "Mejor revisar este punto.",
+      "Esto podria afectar el resultado."
+    ],
+    "blocked": [
+      "Estoy bloqueada.",
+      "Necesito un dato para seguir.",
+      "No puedo avanzar sin tu respuesta.",
+      "Me falta informacion.",
+      "Necesito que me confirmes algo.",
+      "Estoy esperando una decision.",
+      "Este paso depende de ti.",
+      "Con ese dato puedo continuar."
+    ],
+    "success": [
+      "Salio bien.",
+      "Todo correcto.",
+      "Funciono.",
+      "La prueba paso.",
+      "Resultado exitoso.",
+      "Quedo funcionando.",
+      "Buen resultado.",
+      "Esta todo en orden."
+    ],
+    "long_task": [
+      "Esto puede tardar un poco.",
+      "Voy a trabajar en segundo plano.",
+      "Me tomara un momento.",
+      "Esto requiere unos minutos.",
+      "Sigo con una tarea mas larga.",
+      "Voy a avanzar con calma.",
+      "Te aviso cuando termine.",
+      "Estoy iniciando una tarea extensa."
+    ],
+    "resume": [
+      "Ya volvi.",
+      "Continuo desde donde quedamos.",
+      "Retomo el trabajo.",
+      "Seguimos.",
+      "Estoy de vuelta.",
+      "Vuelvo a revisar esto.",
+      "Retomando.",
+      "Ya estoy aqui."
+    ],
+    "handoff": [
+      "Tarea lista para tu revision.",
+      "Codex termino, te toca revisar.",
+      "Hay cambios listos para mirar.",
+      "Quedo pendiente tu revision.",
+      "Puedes revisar el resultado.",
+      "El trabajo quedo para validacion.",
+      "Lista para el siguiente paso.",
+      "Te dejo el relevo."
+    ],
+    "wakeup": [
+      "Desperte para revisar.",
+      "Volvi por el programador.",
+      "Estoy chequeando de nuevo.",
+      "Inicio una revision automatica.",
+      "Retomo por horario.",
+      "Estoy despierta para verificar.",
+      "Arranco el chequeo pendiente.",
+      "Vuelvo a mirar el estado."
+    ],
+    "commit": [
+      "Commit listo.",
+      "Cambios guardados en git.",
+      "Checkpoint creado.",
+      "El commit quedo hecho.",
+      "Version guardada.",
+      "Quedo registrado en git.",
+      "Punto de avance guardado.",
+      "Cambios confirmados."
+    ],
+    "clarify": [
+      "Tengo una duda puntual.",
+      "Necesito aclarar algo.",
+      "Una pregunta antes de seguir.",
+      "Me falta una precision.",
+      "Quiero confirmar un detalle.",
+      "Necesito una aclaracion breve.",
+      "Hay una duda pequena.",
+      "Puedo seguir con una respuesta."
+    ]
+  }
+}

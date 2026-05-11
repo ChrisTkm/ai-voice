@@ -1,0 +1,143 @@
+<svg width="1200" height="380" viewBox="0 0 1200 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1115"/>
+      <stop offset="1" stop-color="#07080a"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#1b1f27" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#11141a" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#f8d57a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="380" rx="16" fill="url(#bg)"/>
+
+  <g opacity="0.18">
+    <circle cx="70" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="52" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="92" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="132" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="172" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="212" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="252" r="1" fill="#3a3f4a"/>
+    <circle cx="70" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="110" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="150" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="190" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="230" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="270" cy="292" r="1" fill="#3a3f4a"/>
+    <circle cx="310" cy="292" r="1" fill="#3a3f4a"/>
+  </g>
+
+  <g transform="translate(70 72)">
+    <rect x="4" y="8" width="430" height="240" rx="18" fill="#000" opacity="0.28" filter="url(#shadow)"/>
+    <rect width="430" height="240" rx="18" fill="url(#panel)" stroke="#2b3240"/>
+
+    <rect x="28" y="32" width="154" height="54" rx="12" fill="#131821" stroke="#22d3ee" stroke-opacity="0.5"/>
+    <circle cx="48" cy="59" r="7" fill="#22d3ee" filter="url(#glow)"/>
+    <path d="M63 59 C73 43, 87 43, 97 59 C107 75, 121 75, 131 59" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M63 59 C73 51, 87 51, 97 59 C107 67, 121 67, 131 59" stroke="#f8d57a" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.85"/>
+    <text x="147" y="64" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" fill="#9ddff0">thinking</text>
+
+    <rect x="246" y="32" width="154" height="54" rx="12" fill="#131821" stroke="#38bdf8" stroke-opacity="0.35"/>
+    <circle cx="266" cy="59" r="7" fill="#22c55e"/>
+    <path d="M282 60 L296 73 L324 45" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <text x="339" y="64" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" fill="#b8d7ff">complete</text>
+
+    <path d="M182 59 C205 59, 220 59, 246 59" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4 6" opacity="0.65"/>
+
+    <rect x="28" y="111" width="372" height="92" rx="14" fill="#10151d" stroke="#2b3240"/>
+    <text x="48" y="139" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" fill="#22d3ee">EVENT ROUTING</text>
+    <text x="48" y="164" font-family="Inter, Segoe UI, sans-serif" font-size="14" fill="#e8eaee">Claude / Codex / Copilot</text>
+    <text x="48" y="186" font-family="Inter, Segoe UI, sans-serif" font-size="14" fill="#c4ccd7">map host events into short local audio intents</text>
+
+    <rect x="48" y="214" width="110" height="10" rx="5" fill="#222935"/>
+    <rect x="48" y="214" width="73" height="10" rx="5" fill="url(#accent)"/>
+    <text x="169" y="223" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10" fill="#9aa7ba">15 intents</text>
+
+    <g transform="translate(280 141)">
+      <circle cx="0" cy="0" r="6" fill="#22d3ee"/>
+      <circle cx="22" cy="0" r="6" fill="#22c55e"/>
+      <circle cx="44" cy="0" r="6" fill="#f59e0b"/>
+      <circle cx="66" cy="0" r="6" fill="#ef4444"/>
+      <text x="-2" y="28" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10" fill="#94a3b8">signal palette</text>
+    </g>
+  </g>
+
+  <g transform="translate(590 102)">
+    <text x="0" y="0" font-family="JetBrains Mono, ui-monospace, monospace" font-size="60" font-weight="700" letter-spacing="3" fill="#F0FFFF">AI-VOICE</text>
+    <line x1="0" y1="18" x2="330" y2="18" stroke="#22d3ee" stroke-opacity="0.65"/>
+    <text x="0" y="50" font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" letter-spacing="1" fill="#22d3ee">/// LOCAL AUDIO SIGNALS FOR AGENT WORKFLOWS</text>
+
+    <text x="0" y="102" font-family="Inter, Segoe UI, sans-serif" font-size="16" fill="#d6dde8">Curated voice clips instead of long dynamic TTS.</text>
+    <text x="0" y="128" font-family="Inter, Segoe UI, sans-serif" font-size="16" fill="#d6dde8">Fast cues for background work, handoffs, errors, and completion.</text>
+
+    <g transform="translate(0 168)">
+      <rect width="300" height="5" rx="2.5" fill="#222935"/>
+      <rect width="202" height="5" rx="2.5" fill="url(#accent)"/>
+      <text x="0" y="24" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10" fill="#94a3b8">VOICE LIBRARY</text>
+      <text x="300" y="24" text-anchor="end" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10" fill="#22d3ee">ALEJANDRA · SHORT PHRASES</text>
+    </g>
+
+    <text x="0" y="235" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#6b7280">PowerShell · MP3 folders · Narakeet · local-first</text>
+  </g>
+
+  <g transform="translate(0 348)" opacity="0.9">
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="#2a2f3a" stroke-width="0.6"/>
+    <circle cx="20" cy="12" r="3.5" fill="#22c55e"/>
+    <text x="32" y="16" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" fill="#94a3b8">intent-driven playback · decoupled from host apps</text>
+    <text x="1158" y="16" text-anchor="end" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" fill="#f8d57a">local audio backend</text>
+  </g>
+
+  <path d="M0 370H1200V380H0V370Z" fill="#D4AF37"/>
+</svg>

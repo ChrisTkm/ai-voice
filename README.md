@@ -1,28 +1,123 @@
+![ai-voice Banner](assets/banner.svg)
+
 # ai-voice
 
-Small local voice notification library for Claude, Codex and Copilot events.
+> Local voice cues for agent workflows.
+>
+> Short, intentional, human-friendly audio feedback for Claude, Codex, Copilot, or any other tool that can emit an event.
 
-## Current audio intents
+`ai-voice` is a small local audio layer that turns machine events into clear audible signals. It is not a general TTS reader and it is not tied to one editor, one extension, or one AI product.
 
-- `notif`: user input is needed.
-- `complete`: a task finished.
-- `stop`: fallback completion sound.
-- `thinking`: work started or analysis is in progress.
-- `error`: something failed.
-- `permission`: approval or access is needed.
-- `warning`: something should be reviewed before continuing.
-- `blocked`: progress depends on more information.
-- `success`: a check, build, or action succeeded.
-- `long_task`: a longer task is starting.
-- `resume`: work is being resumed.
-- `handoff`: work is ready for human review or ownership transfer.
-- `wakeup`: a scheduled or automated run started cold.
-- `commit`: git checkpoint or commit completed.
-- `clarify`: a specific clarification is needed.
+## Why this exists
 
-Each folder can contain numbered MP3 files such as `1.mp3`, `2.mp3`, and `3.mp3`. The player randomly selects one MP3 from the target folder.
+When an agent is working in the background, visual feedback is easy to miss. `ai-voice` solves that with short clips mapped to meaningful intents like "thinking", "complete", or "permission".
 
-## Generate new Narakeet clips
+Design goals:
+
+- local-first and low-latency
+- pleasant voice identity over generic system TTS
+- short clips instead of long spoken output
+- simple integration from scripts, hooks, or editor automation
+- no hard dependency on `Signal_AI` or any single host application
+
+## Core model
+
+The unit of playback is an `intent`.
+
+Each intent maps to a folder with one or more numbered MP3 files such as `1.mp3`, `2.mp3`, and `3.mp3`. The player randomly selects one file from the target folder.
+
+Current intents:
+
+- `notif`: user input is needed
+- `complete`: a task finished
+- `stop`: fallback completion sound
+- `thinking`: work started or analysis is in progress
+- `error`: something failed
+- `permission`: approval or access is needed
+- `warning`: something should be reviewed before continuing
+- `blocked`: progress depends on more information
+- `success`: a check, build, or action succeeded
+- `long_task`: a longer task is starting
+- `resume`: work is being resumed
+- `handoff`: work is ready for human review or ownership transfer
+- `wakeup`: a scheduled or automated run started cold
+- `commit`: git checkpoint or commit completed
+- `clarify`: a specific clarification is needed
+
+## Repository layout
+
+```text
+ai-voice/
+|- claude-notify.ps1
+|- codex-notify.ps1
+|- copilot-notify.ps1
+|- generate-narakeet.mjs
+|- narakeet-lines.csv
+|- voice-library.json
+|- play.cs
+|- thinking/
+|- complete/
+|- permission/
+|- ...
+```
+
+## Quick usage
+
+Run a sound directly from PowerShell:
+
+```powershell
+.\copilot-notify.ps1 -Intent thinking
+.\copilot-notify.ps1 -Intent complete
+.\copilot-notify.ps1 -NotificationJson '{"event":"task.error"}'
+```
+
+The same idea applies to any host application: emit a small event or pass an explicit `intent`, and `ai-voice` handles playback.
+
+## Event routing
+
+### Claude Code (`claude-notify.ps1`)
+
+Reads JSON from stdin. Maps Claude Code hook events automatically:
+
+- `Notification` + "permission" message -> `permission`
+- `Notification` -> `notif`
+- `Stop` -> `complete`
+- `SubagentStop` -> `handoff`
+- `SessionStart` startup -> `wakeup`
+- `SessionStart` resume -> `resume`
+- `PostToolUse` git commit -> `commit`
+
+Configured in `~/.claude/settings.json` under `hooks`.
+
+### Codex (`codex-notify.ps1`)
+
+Accepts `-NotificationJson`. Maps Codex event types:
+
+- `agent-turn-user-prompt` -> `notif`
+- `agent-turn-complete` -> `complete`
+- `agent-turn-stop` -> `stop`
+
+Custom payloads can pass `intent` or `sound` to target any folder directly.
+
+### VS Code Copilot (`copilot-notify.ps1`)
+
+Accepts `-Intent` or `-NotificationJson`. Maps VS Code events:
+
+- `chat.submit` -> `thinking`
+- `chat.response` -> `complete`
+- `chat.stop` -> `stop`
+- `inline.accept` -> `success`
+- `inline.reject` -> `stop`
+- `task.start` -> `long_task`
+- `task.complete` -> `complete`
+- `task.error` -> `error`
+- `agent.handoff` -> `handoff`
+- `agent.blocked` -> `blocked`
+- `agent.permission` -> `permission`
+
+## Audio generation
+
+This project currently favors curated short phrases over long dynamic TTS. The main reason is quality: the selected Narakeet voice works well for short notifications, while long free-form TTS is slower and less pleasant for repeated daily use.
 
 Add or edit phrases in `narakeet-lines.csv`, then set your Narakeet API key and run:
 
@@ -37,61 +132,17 @@ By default the script uses the `alejandra` voice and writes MP3 files into the i
 node .\generate-narakeet.mjs --overwrite
 ```
 
-## Event routing
+## Integration boundary
 
-### Claude Code (`claude-notify.ps1`)
+`ai-voice` should stay decoupled from editor-specific or AI-specific products.
 
-Reads JSON from stdin. Maps Claude Code hook events automatically:
+Valid relationship:
 
-- `Notification` + "permission" message → `permission`
-- `Notification` → `notif`
-- `Stop` → `complete`
-- `SubagentStop` → `handoff`
-- `SessionStart` startup → `wakeup`
-- `SessionStart` resume → `resume`
-- `PostToolUse` git commit → `commit`
+- an external tool invokes `ai-voice`
 
-Configured in `~/.claude/settings.json` under `hooks`.
+Invalid relationship:
 
-### Codex (`codex-notify.ps1`)
+- `ai-voice` depending on the internal logic of another project
+- another project embedding audio-domain rules that belong here
 
-Accepts `-NotificationJson` parameter. Maps Codex event types:
-
-- `agent-turn-user-prompt` → `notif`
-- `agent-turn-complete` → `complete`
-- `agent-turn-stop` → `stop`
-
-Custom payloads can pass `intent` or `sound` to target any folder directly, for example `error`, `permission`, or `thinking`.
-
-### VS Code Copilot (`copilot-notify.ps1`)
-
-Accepts `-Intent` (direct) or `-NotificationJson` (structured). Maps VS Code events:
-
-- `chat.submit` → `thinking`
-- `chat.response` → `complete`
-- `chat.stop` → `stop`
-- `inline.accept` → `success`
-- `inline.reject` → `stop`
-- `task.start` → `long_task`
-- `task.complete` → `complete`
-- `task.error` → `error`
-- `agent.handoff` → `handoff`
-- `agent.blocked` → `blocked`
-- `agent.permission` → `permission`
-
-**Integration via Signal_AI extension** (`c:\dev\Signal_AI`):
-
-The `CopilotNotificationService` inside Signal_AI hooks into VS Code task events automatically and exposes the `signalAi.notify` command for keybindings.
-
-Trigger any sound from a VS Code keybinding:
-
-```json
-{ "command": "signalAi.notify", "args": { "intent": "thinking" } }
-```
-
-Or call the script directly from a terminal:
-
-```powershell
-.\copilot-notify.ps1 -Intent complete
-.\copilot-notify.ps1 -NotificationJson '{"event":"task.error"}'
-```
+In practice, `Signal_AI`, Claude, Codex, Copilot, or any future tool can call these scripts, but `ai-voice` remains its own small audio backend.

@@ -1,11 +1,11 @@
 {
   "voice": "Alejandra",
   "provider": "Narakeet",
-  "format": "mp3",
+  "format": "wav",
   "guidelines": {
     "duration": "0.8-2.5 seconds per clip",
     "tone": "warm, brief, calm, useful",
-    "naming": "Use numeric file names inside each intent folder: 1.mp3, 2.mp3, 3.mp3"
+    "naming": "Use numeric file names inside each intent folder: 1.wav, 2.wav, 3.wav"
   },
   "intents": {
     "notif": [

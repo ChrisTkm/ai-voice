@@ -24,7 +24,7 @@ Design goals:
 
 The unit of playback is an `intent`.
 
-Each intent maps to a folder with one or more numbered MP3 files such as `1.mp3`, `2.mp3`, and `3.mp3`. The player randomly selects one file from the target folder.
+Each intent maps to a folder with one or more numbered WAV files such as `1.wav`, `2.wav`, and `3.wav`. The player randomly selects one file from the target folder. MP3 files are still accepted as a fallback while migrating older audio sets.
 
 Current intents:
 
@@ -122,11 +122,11 @@ This project currently favors curated short phrases over long dynamic TTS. The m
 Add or edit phrases in `narakeet-lines.csv`, then set your Narakeet API key and run:
 
 ```powershell
-$env:NARAKEET_API_KEY = "your-api-key"
+$env:NARAKEET_API_KEY = "<your-real-narakeet-api-key>"
 node .\generate-narakeet.mjs
 ```
 
-By default the script uses the `alejandra` voice and writes MP3 files into the intent folders. Existing files are skipped unless you pass `--overwrite`.
+By default the script uses the `alejandra` voice and writes WAV files into the intent folders. WAV generation uses Narakeet's long-content polling API, so each clip can take a few seconds to finish. Existing files are skipped unless you pass `--overwrite`.
 
 ```powershell
 node .\generate-narakeet.mjs --overwrite

@@ -17,12 +17,25 @@ for (let i = 2; i < process.argv.length; i += 1) {
 
 const apiKey = args.get("api-key") || process.env.NARAKEET_API_KEY;
 const voice = args.get("voice") || "alejandra";
-const format = args.get("format") || "mp3";
+const format = (args.get("format") || "wav").toLowerCase();
 const linesPath = path.join(root, args.get("lines") || "narakeet-lines.csv");
 const overwrite = args.has("overwrite");
+const pollIntervalMs = Number(args.get("poll-interval-ms") || 5000);
 
 if (!apiKey) {
   throw new Error("Set NARAKEET_API_KEY before generating audio.");
+}
+
+if (/^(tu-api-key|your-api-key|api-key|changeme|replace-me)$/i.test(apiKey.trim())) {
+  throw new Error("NARAKEET_API_KEY still contains a placeholder. Set it to your real Narakeet API key.");
+}
+
+if (!["wav", "mp3"].includes(format)) {
+  throw new Error(`Unsupported format: ${format}. Use wav or mp3.`);
+}
+
+if (!Number.isFinite(pollIntervalMs) || pollIntervalMs < 1000) {
+  throw new Error("--poll-interval-ms must be a number greater than or equal to 1000.");
 }
 
 function parseCsv(input) {
@@ -72,12 +85,111 @@ function parseCsv(input) {
     );
 }
 
+function targetName(file, outputFormat) {
+  const extension = `.${outputFormat.toLowerCase()}`;
+  const parsed = path.parse(file);
+  if ([".mp3", ".wav"].includes(parsed.ext.toLowerCase())) {
+    return `${parsed.name}${extension}`;
+  }
+  return `${file}${extension}`;
+}
+
 async function exists(file) {
   try {
     await access(file);
     return true;
   } catch {
     return false;
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function textResponse(response) {
+  return response.text().catch(() => "");
+}
+
+async function requestStreamingAudio(url, text, outputLabel) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      accept: "application/octet-stream",
+      "content-type": "text/plain; charset=utf-8",
+      "x-api-key": apiKey,
+    },
+    body: text,
+  });
+
+  if (!response.ok) {
+    const body = await textResponse(response);
+    throw new Error(
+      `Narakeet request failed for ${outputLabel}: HTTP ${response.status} ${response.statusText}${body ? ` - ${body}` : ""}`,
+    );
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+async function requestPollingAudio(url, text, outputLabel) {
+  const request = await fetch(url, {
+    method: "POST",
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      "x-api-key": apiKey,
+    },
+    body: text,
+  });
+
+  if (!request.ok) {
+    const body = await textResponse(request);
+    throw new Error(
+      `Narakeet build request failed for ${outputLabel}: HTTP ${request.status} ${request.statusText}${body ? ` - ${body}` : ""}`,
+    );
+  }
+
+  const build = await request.json();
+  if (!build.statusUrl) {
+    throw new Error(`Narakeet build request for ${outputLabel} did not return a statusUrl.`);
+  }
+
+  while (true) {
+    await sleep(pollIntervalMs);
+
+    const statusResponse = await fetch(build.statusUrl);
+    if (!statusResponse.ok) {
+      const body = await textResponse(statusResponse);
+      throw new Error(
+        `Narakeet status check failed for ${outputLabel}: HTTP ${statusResponse.status} ${statusResponse.statusText}${body ? ` - ${body}` : ""}`,
+      );
+    }
+
+    const status = await statusResponse.json();
+    const percent = Number.isFinite(status.percent) ? ` ${status.percent}%` : "";
+    console.log(`  status:${percent}${status.finished ? " finished" : ""}`);
+
+    if (!status.finished) {
+      continue;
+    }
+
+    if (!status.succeeded) {
+      throw new Error(`Narakeet build failed for ${outputLabel}: ${status.message || "unknown error"}`);
+    }
+
+    if (!status.result) {
+      throw new Error(`Narakeet build succeeded for ${outputLabel} but did not return a result URL.`);
+    }
+
+    const audio = await fetch(status.result);
+    if (!audio.ok) {
+      const body = await textResponse(audio);
+      throw new Error(
+        `Narakeet download failed for ${outputLabel}: HTTP ${audio.status} ${audio.statusText}${body ? ` - ${body}` : ""}`,
+      );
+    }
+
+    return Buffer.from(await audio.arrayBuffer());
   }
 }
 
@@ -94,36 +206,25 @@ for (const line of lines) {
   }
 
   const targetDir = path.join(root, intent);
-  const targetFile = path.join(targetDir, file);
+  const outputFile = targetName(file, format);
+  const targetFile = path.join(targetDir, outputFile);
 
   await mkdir(targetDir, { recursive: true });
 
   if (!overwrite && (await exists(targetFile))) {
-    console.log(`Skipping existing: ${intent}/${file}`);
+    console.log(`Skipping existing: ${intent}/${outputFile}`);
     continue;
   }
 
   const url = new URL(`https://api.narakeet.com/text-to-speech/${format}`);
   url.searchParams.set("voice", voice);
 
-  console.log(`Generating: ${intent}/${file}`);
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      accept: "application/octet-stream",
-      "content-type": "text/plain; charset=utf-8",
-      "x-api-key": apiKey,
-    },
-    body: text,
-  });
+  console.log(`Generating: ${intent}/${outputFile}`);
+  const outputLabel = `${intent}/${outputFile}`;
+  const bytes =
+    format === "wav"
+      ? await requestPollingAudio(url, text, outputLabel)
+      : await requestStreamingAudio(url, text, outputLabel);
 
-  if (!response.ok) {
-    const body = await response.text().catch(() => "");
-    throw new Error(
-      `Narakeet request failed for ${intent}/${file}: HTTP ${response.status} ${response.statusText}${body ? ` - ${body}` : ""}`,
-    );
-  }
-
-  const bytes = Buffer.from(await response.arrayBuffer());
   await writeFile(targetFile, bytes);
 }

@@ -18,7 +18,13 @@ function Write-NotifyLog {
 }
 
 function Ensure-Player {
-    if (Test-Path -LiteralPath $player) {
+    $shouldCompile = -not (Test-Path -LiteralPath $player)
+
+    if (-not $shouldCompile -and (Test-Path -LiteralPath $playerSource)) {
+        $shouldCompile = (Get-Item -LiteralPath $playerSource).LastWriteTimeUtc -gt (Get-Item -LiteralPath $player).LastWriteTimeUtc
+    }
+
+    if (-not $shouldCompile) {
         return $true
     }
 
@@ -35,6 +41,18 @@ function Ensure-Player {
         Write-NotifyLog "player compile failed: $($_.Exception.Message)"
         return $false
     }
+}
+
+function Test-PlayableTarget {
+    param([string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return $false
+    }
+
+    return [bool](Get-ChildItem -LiteralPath $Path -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in ".wav", ".mp3" } |
+        Select-Object -First 1)
 }
 
 if (-not (Ensure-Player)) {
@@ -81,12 +99,12 @@ if (-not $Intent) { exit 0 }
 $soundTarget = Join-Path $root $Intent
 $fallbackTarget = Join-Path $root "stop"
 
-if (-not (Test-Path -LiteralPath $soundTarget) -or -not (Get-ChildItem -LiteralPath $soundTarget -Filter "*.mp3" -File -ErrorAction SilentlyContinue)) {
+if (-not (Test-PlayableTarget $soundTarget)) {
     Write-NotifyLog "fallback intent=$Intent target=$soundTarget"
     $soundTarget = $fallbackTarget
 }
 
-if (-not (Test-Path -LiteralPath $soundTarget) -or -not (Get-ChildItem -LiteralPath $soundTarget -Filter "*.mp3" -File -ErrorAction SilentlyContinue)) {
+if (-not (Test-PlayableTarget $soundTarget)) {
     Write-NotifyLog "no playable target intent=$Intent"
     exit 0
 }

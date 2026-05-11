@@ -1,113 +1,113 @@
 intent,file,text
-notif,1.mp3,Te toca.
-notif,2.mp3,Tengo una pregunta.
-notif,3.mp3,Cuando puedas, seguimos.
-notif,4.mp3,Necesito tu respuesta.
-notif,5.mp3,Hay algo para revisar.
-notif,6.mp3,Estoy lista para continuar.
-notif,7.mp3,Te leo.
-notif,8.mp3,Quedo atenta.
-complete,1.mp3,Listo.
-complete,2.mp3,Termine.
-complete,3.mp3,Ya quedo.
-complete,4.mp3,Trabajo completado.
-complete,5.mp3,Todo listo por aqui.
-complete,6.mp3,Ya esta resuelto.
-complete,7.mp3,Termine esta parte.
-complete,8.mp3,Quedo listo.
-thinking,1.mp3,Dame un momento.
-thinking,2.mp3,Estoy revisando.
-thinking,3.mp3,Voy a pensarlo.
-thinking,4.mp3,Estoy mirando los detalles.
-thinking,5.mp3,Un momento, por favor.
-thinking,6.mp3,Estoy trabajando en eso.
-thinking,7.mp3,Dejame verificar.
-thinking,8.mp3,Estoy procesando la idea.
-error,1.mp3,Algo fallo.
-error,2.mp3,No pude completar eso.
-error,3.mp3,Hubo un problema.
-error,4.mp3,Eso no salio bien.
-error,5.mp3,Necesito revisar este error.
-error,6.mp3,La accion no se pudo terminar.
-error,7.mp3,Encontre un problema.
-error,8.mp3,Esto requiere atencion.
-permission,1.mp3,Necesito permiso para continuar.
-permission,2.mp3,Me falta acceso a eso.
-permission,3.mp3,Puedes autorizar este paso.
-permission,4.mp3,Necesito tu aprobacion.
-permission,5.mp3,Este paso requiere permiso.
-permission,6.mp3,No tengo acceso suficiente.
-permission,7.mp3,Hace falta una autorizacion.
-permission,8.mp3,Puedo seguir cuando lo apruebes.
-warning,1.mp3,Ojo con esto.
-warning,2.mp3,Hay algo importante que revisar.
-warning,3.mp3,Conviene mirar esto antes de seguir.
-warning,4.mp3,Esto merece atencion.
-warning,5.mp3,Detecte una posible alerta.
-warning,6.mp3,Hay un detalle sensible.
-warning,7.mp3,Mejor revisar este punto.
-warning,8.mp3,Esto podria afectar el resultado.
-blocked,1.mp3,Estoy bloqueada.
-blocked,2.mp3,Necesito un dato para seguir.
-blocked,3.mp3,No puedo avanzar sin tu respuesta.
-blocked,4.mp3,Me falta informacion.
-blocked,5.mp3,Necesito que me confirmes algo.
-blocked,6.mp3,Estoy esperando una decision.
-blocked,7.mp3,Este paso depende de ti.
-blocked,8.mp3,Con ese dato puedo continuar.
-success,1.mp3,Salio bien.
-success,2.mp3,Todo correcto.
-success,3.mp3,Funciono.
-success,4.mp3,La prueba paso.
-success,5.mp3,Resultado exitoso.
-success,6.mp3,Quedo funcionando.
-success,7.mp3,Buen resultado.
-success,8.mp3,Esta todo en orden.
-long_task,1.mp3,Esto puede tardar un poco.
-long_task,2.mp3,Voy a trabajar en segundo plano.
-long_task,3.mp3,Me tomara un momento.
-long_task,4.mp3,Esto requiere unos minutos.
-long_task,5.mp3,Sigo con una tarea mas larga.
-long_task,6.mp3,Voy a avanzar con calma.
-long_task,7.mp3,Te aviso cuando termine.
-long_task,8.mp3,Estoy iniciando una tarea extensa.
-resume,1.mp3,Ya volvi.
-resume,2.mp3,Continuo desde donde quedamos.
-resume,3.mp3,Retomo el trabajo.
-resume,4.mp3,Seguimos.
-resume,5.mp3,Estoy de vuelta.
-resume,6.mp3,Vuelvo a revisar esto.
-resume,7.mp3,Retomando.
-resume,8.mp3,Ya estoy aqui.
-handoff,1.mp3,Tarea lista para tu revision.
-handoff,2.mp3,Codex termino, te toca revisar.
-handoff,3.mp3,Hay cambios listos para mirar.
-handoff,4.mp3,Quedo pendiente tu revision.
-handoff,5.mp3,Puedes revisar el resultado.
-handoff,6.mp3,El trabajo quedo para validacion.
-handoff,7.mp3,Lista para el siguiente paso.
-handoff,8.mp3,Te dejo el relevo.
-wakeup,1.mp3,Desperte para revisar.
-wakeup,2.mp3,Volvi por el programador.
-wakeup,3.mp3,Estoy chequeando de nuevo.
-wakeup,4.mp3,Inicio una revision automatica.
-wakeup,5.mp3,Retomo por horario.
-wakeup,6.mp3,Estoy despierta para verificar.
-wakeup,7.mp3,Arranco el chequeo pendiente.
-wakeup,8.mp3,Vuelvo a mirar el estado.
-commit,1.mp3,Commit listo.
-commit,2.mp3,Cambios guardados en git.
-commit,3.mp3,Checkpoint creado.
-commit,4.mp3,El commit quedo hecho.
-commit,5.mp3,Version guardada.
-commit,6.mp3,Quedo registrado en git.
-commit,7.mp3,Punto de avance guardado.
-commit,8.mp3,Cambios confirmados.
-clarify,1.mp3,Tengo una duda puntual.
-clarify,2.mp3,Necesito aclarar algo.
-clarify,3.mp3,Una pregunta antes de seguir.
-clarify,4.mp3,Me falta una precision.
-clarify,5.mp3,Quiero confirmar un detalle.
-clarify,6.mp3,Necesito una aclaracion breve.
-clarify,7.mp3,Hay una duda pequena.
-clarify,8.mp3,Puedo seguir con una respuesta.
+notif,1.wav,Te toca.
+notif,2.wav,Tengo una pregunta.
+notif,3.wav,Cuando puedas, seguimos.
+notif,4.wav,Necesito tu respuesta.
+notif,5.wav,Hay algo para revisar.
+notif,6.wav,Estoy lista para continuar.
+notif,7.wav,Te leo.
+notif,8.wav,Quedo atenta.
+complete,1.wav,Listo.
+complete,2.wav,Termine.
+complete,3.wav,Ya quedo.
+complete,4.wav,Trabajo completado.
+complete,5.wav,Todo listo por aqui.
+complete,6.wav,Ya esta resuelto.
+complete,7.wav,Termine esta parte.
+complete,8.wav,Quedo listo.
+thinking,1.wav,Dame un momento.
+thinking,2.wav,Estoy revisando.
+thinking,3.wav,Voy a pensarlo.
+thinking,4.wav,Estoy mirando los detalles.
+thinking,5.wav,Un momento, por favor.
+thinking,6.wav,Estoy trabajando en eso.
+thinking,7.wav,Dejame verificar.
+thinking,8.wav,Estoy procesando la idea.
+error,1.wav,Algo fallo.
+error,2.wav,No pude completar eso.
+error,3.wav,Hubo un problema.
+error,4.wav,Eso no salio bien.
+error,5.wav,Necesito revisar este error.
+error,6.wav,La accion no se pudo terminar.
+error,7.wav,Encontre un problema.
+error,8.wav,Esto requiere atencion.
+permission,1.wav,Necesito permiso para continuar.
+permission,2.wav,Me falta acceso a eso.
+permission,3.wav,Puedes autorizar este paso.
+permission,4.wav,Necesito tu aprobacion.
+permission,5.wav,Este paso requiere permiso.
+permission,6.wav,No tengo acceso suficiente.
+permission,7.wav,Hace falta una autorizacion.
+permission,8.wav,Puedo seguir cuando lo apruebes.
+warning,1.wav,Ojo con esto.
+warning,2.wav,Hay algo importante que revisar.
+warning,3.wav,Conviene mirar esto antes de seguir.
+warning,4.wav,Esto merece atencion.
+warning,5.wav,Detecte una posible alerta.
+warning,6.wav,Hay un detalle sensible.
+warning,7.wav,Mejor revisar este punto.
+warning,8.wav,Esto podria afectar el resultado.
+blocked,1.wav,Estoy bloqueada.
+blocked,2.wav,Necesito un dato para seguir.
+blocked,3.wav,No puedo avanzar sin tu respuesta.
+blocked,4.wav,Me falta informacion.
+blocked,5.wav,Necesito que me confirmes algo.
+blocked,6.wav,Estoy esperando una decision.
+blocked,7.wav,Este paso depende de ti.
+blocked,8.wav,Con ese dato puedo continuar.
+success,1.wav,Salio bien.
+success,2.wav,Todo correcto.
+success,3.wav,Funciono.
+success,4.wav,La prueba paso.
+success,5.wav,Resultado exitoso.
+success,6.wav,Quedo funcionando.
+success,7.wav,Buen resultado.
+success,8.wav,Esta todo en orden.
+long_task,1.wav,Esto puede tardar un poco.
+long_task,2.wav,Voy a trabajar en segundo plano.
+long_task,3.wav,Me tomara un momento.
+long_task,4.wav,Esto requiere unos minutos.
+long_task,5.wav,Sigo con una tarea mas larga.
+long_task,6.wav,Voy a avanzar con calma.
+long_task,7.wav,Te aviso cuando termine.
+long_task,8.wav,Estoy iniciando una tarea extensa.
+resume,1.wav,Ya volvi.
+resume,2.wav,Continuo desde donde quedamos.
+resume,3.wav,Retomo el trabajo.
+resume,4.wav,Seguimos.
+resume,5.wav,Estoy de vuelta.
+resume,6.wav,Vuelvo a revisar esto.
+resume,7.wav,Retomando.
+resume,8.wav,Ya estoy aqui.
+handoff,1.wav,Tarea lista para tu revision.
+handoff,2.wav,Codex termino, te toca revisar.
+handoff,3.wav,Hay cambios listos para mirar.
+handoff,4.wav,Quedo pendiente tu revision.
+handoff,5.wav,Puedes revisar el resultado.
+handoff,6.wav,El trabajo quedo para validacion.
+handoff,7.wav,Lista para el siguiente paso.
+handoff,8.wav,Te dejo el relevo.
+wakeup,1.wav,Desperte para revisar.
+wakeup,2.wav,Volvi por el programador.
+wakeup,3.wav,Estoy chequeando de nuevo.
+wakeup,4.wav,Inicio una revision automatica.
+wakeup,5.wav,Retomo por horario.
+wakeup,6.wav,Estoy despierta para verificar.
+wakeup,7.wav,Arranco el chequeo pendiente.
+wakeup,8.wav,Vuelvo a mirar el estado.
+commit,1.wav,Commit listo.
+commit,2.wav,Cambios guardados en git.
+commit,3.wav,Checkpoint creado.
+commit,4.wav,El commit quedo hecho.
+commit,5.wav,Version guardada.
+commit,6.wav,Quedo registrado en git.
+commit,7.wav,Punto de avance guardado.
+commit,8.wav,Cambios confirmados.
+clarify,1.wav,Tengo una duda puntual.
+clarify,2.wav,Necesito aclarar algo.
+clarify,3.wav,Una pregunta antes de seguir.
+clarify,4.wav,Me falta una precision.
+clarify,5.wav,Quiero confirmar un detalle.
+clarify,6.wav,Necesito una aclaracion breve.
+clarify,7.wav,Hay una duda pequena.
+clarify,8.wav,Puedo seguir con una respuesta.

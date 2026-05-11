@@ -1,5 +1,6 @@
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $player = Join-Path $root "play.exe"
+$playerSource = Join-Path $root "play.cs"
 $logFile = Join-Path $root "claude-notify.log"
 
 function Write-NotifyLog {
@@ -11,7 +12,27 @@ function Write-NotifyLog {
     }
 }
 
-if (-not (Test-Path -LiteralPath $player)) {
+function Ensure-Player {
+    if (Test-Path -LiteralPath $player) {
+        return $true
+    }
+
+    if (-not (Test-Path -LiteralPath $playerSource)) {
+        Write-NotifyLog "missing player source: $playerSource"
+        return $false
+    }
+
+    try {
+        Add-Type -Path $playerSource -OutputAssembly $player -OutputType ConsoleApplication | Out-Null
+        Write-NotifyLog "compiled player: $player"
+        return (Test-Path -LiteralPath $player)
+    } catch {
+        Write-NotifyLog "player compile failed: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+if (-not (Ensure-Player)) {
     Write-NotifyLog "missing player: $player"
     exit 0
 }

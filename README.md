@@ -146,3 +146,9 @@ Invalid relationship:
 - another project embedding audio-domain rules that belong here
 
 In practice, `Signal_AI`, Claude, Codex, Copilot, or any future tool can call these scripts, but `ai-voice` remains its own small audio backend.
+
+## License
+
+Copyright (c) 2026 Albornoz Studio. All rights reserved.
+
+This repository and its contents are a product of Albornoz Studio. See `LICENSE` for details.

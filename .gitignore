@@ -1,6 +1,9 @@
 # Logs
 *.log
 
+# Local runtime queue
+.ai-voice-runtime/
+
 # Compiled binaries
 play.exe
 *.obj

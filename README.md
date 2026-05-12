@@ -52,9 +52,9 @@ ai-voice/
 |- codex-notify.ps1
 |- copilot-notify.ps1
 |- generate-narakeet.mjs
+|- ai-voice-player.ps1
 |- narakeet-lines.csv
 |- voice-library.json
-|- play.cs
 |- thinking/
 |- complete/
 |- permission/
@@ -72,6 +72,14 @@ Run a sound directly from PowerShell:
 ```
 
 The same idea applies to any host application: emit a small event or pass an explicit `intent`, and `ai-voice` handles playback.
+
+For the lowest latency, keep the resident player running:
+
+```powershell
+.\ai-voice-daemon.ps1
+```
+
+In another terminal, call the normal notification scripts. They will enqueue playback to the resident player when it is available and fall back to direct playback when it is not.
 
 ## Event routing
 
@@ -131,6 +139,8 @@ By default the script uses the `alejandra` voice and writes WAV files into the i
 ```powershell
 node .\generate-narakeet.mjs --overwrite
 ```
+
+If the audio device clips the first syllable after being idle, the player warms up the device with a short silent WAV before playing the selected clip.
 
 ## Integration boundary
 

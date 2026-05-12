@@ -1,6 +1,5 @@
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$player = Join-Path $root "play.exe"
-$playerSource = Join-Path $root "play.cs"
+$playerScript = Join-Path $root "ai-voice-player.ps1"
 $logFile = Join-Path $root "claude-notify.log"
 
 function Write-NotifyLog {
@@ -9,32 +8,6 @@ function Write-NotifyLog {
         $stamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
         Add-Content -LiteralPath $logFile -Value "[$stamp] $Message"
     } catch {
-    }
-}
-
-function Ensure-Player {
-    $shouldCompile = -not (Test-Path -LiteralPath $player)
-
-    if (-not $shouldCompile -and (Test-Path -LiteralPath $playerSource)) {
-        $shouldCompile = (Get-Item -LiteralPath $playerSource).LastWriteTimeUtc -gt (Get-Item -LiteralPath $player).LastWriteTimeUtc
-    }
-
-    if (-not $shouldCompile) {
-        return $true
-    }
-
-    if (-not (Test-Path -LiteralPath $playerSource)) {
-        Write-NotifyLog "missing player source: $playerSource"
-        return $false
-    }
-
-    try {
-        Add-Type -Path $playerSource -OutputAssembly $player -OutputType ConsoleApplication | Out-Null
-        Write-NotifyLog "compiled player: $player"
-        return (Test-Path -LiteralPath $player)
-    } catch {
-        Write-NotifyLog "player compile failed: $($_.Exception.Message)"
-        return $false
     }
 }
 
@@ -50,10 +23,12 @@ function Test-PlayableTarget {
         Select-Object -First 1)
 }
 
-if (-not (Ensure-Player)) {
-    Write-NotifyLog "missing player: $player"
+if (-not (Test-Path -LiteralPath $playerScript)) {
+    Write-NotifyLog "missing player script: $playerScript"
     exit 0
 }
+
+. $playerScript
 
 $stdinText = ""
 try {
@@ -125,6 +100,10 @@ if (-not (Test-PlayableTarget $soundTarget)) {
     exit 0
 }
 
-& $player $soundTarget
-$playExit = $LASTEXITCODE
+if (Send-AiVoiceRequest -Root $root -Intent $intent -Event $event) {
+    Write-NotifyLog "queued intent=$intent event=$event target=$soundTarget"
+    exit 0
+}
+
+$playExit = Invoke-AiVoicePlayback -Target $soundTarget
 Write-NotifyLog "played intent=$intent event=$event target=$soundTarget exit=$playExit"

@@ -20,3 +20,11 @@ node_modules/
 desktop.ini
 Thumbs.db
 .DS_Store
+
+# Claude Code (personal)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Visual pet prototypes live outside the ai-voice release
+pet-runs/
+examples/lightweight-thumbnail/

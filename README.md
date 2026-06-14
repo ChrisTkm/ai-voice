@@ -1,5 +1,3 @@
-![ai-voice Banner](assets/banner.svg)
-
 # ai-voice
 
 > Local voice cues for agent workflows.

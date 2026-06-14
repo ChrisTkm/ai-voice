@@ -25,6 +25,9 @@ Before merging to `main`:
 4. Trigger `complete`, `permission`, `error`, and `blocked` through `copilot-notify.ps1`.
 5. Confirm hooks return quickly when the daemon is running.
 6. Confirm no pet assets are tracked in the release.
+7. Confirm no API keys, logs, or runtime queue files are tracked.
+
+See [`TESTING.md`](TESTING.md) and [`SECURITY.md`](SECURITY.md) for the full lightweight checklist.
 
 ## Audio expansion rule
 

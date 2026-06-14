@@ -90,6 +90,12 @@ For setup instructions you can hand to Claude Code, GitHub Copilot in VS Code, o
 
 For first-time installation, see [`INSTALL.md`](INSTALL.md).
 
+Useful release docs:
+
+- [`TESTING.md`](TESTING.md): smoke tests and audible QA
+- [`SECURITY.md`](SECURITY.md): local runtime, API key, and integration boundaries
+- [`RELEASE.md`](RELEASE.md): `v0.1.0` release intent and merge checklist
+
 For the lowest latency, keep the resident player running:
 
 ```powershell

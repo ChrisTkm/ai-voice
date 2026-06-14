@@ -53,6 +53,8 @@ For platform-specific examples, use [`INTEGRATIONS.md`](INTEGRATIONS.md).
 
 The integration should stay boring on purpose: one command per event, no generated speech during the event, no pet process, and no duplicated routing logic in the host.
 
+For security notes, see [`SECURITY.md`](SECURITY.md).
+
 ## Do users need a skill?
 
 No. The runtime is just this repository plus a host that calls one of the notify scripts.

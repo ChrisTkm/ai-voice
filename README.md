@@ -73,6 +73,10 @@ Run a sound directly from PowerShell:
 
 The same idea applies to any host application: emit a small event or pass an explicit `intent`, and `ai-voice` handles playback.
 
+For setup instructions you can hand to Claude Code, GitHub Copilot in VS Code, or another assistant, see [`INTEGRATIONS.md`](INTEGRATIONS.md).
+
+For first-time installation, see [`INSTALL.md`](INSTALL.md).
+
 For the lowest latency, keep the resident player running:
 
 ```powershell

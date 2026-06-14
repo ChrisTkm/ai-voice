@@ -15,10 +15,23 @@ When an agent is working in the background, visual feedback is easy to miss. `ai
 Design goals:
 
 - local-first and low-latency
+- passive by default: the tool should speak, then get out of the way
 - pleasant voice identity over generic system TTS
 - short clips instead of long spoken output
-- simple integration from scripts, hooks, or editor automation
+- one small command from scripts, hooks, or editor automation
 - no hard dependency on `Signal_AI` or any single host application
+
+## Release direction
+
+For `v0.1.0`, "lightweight" means lightweight in system flow, not tiny in audio size.
+
+The happy path is:
+
+1. a host emits an event
+2. one notify script maps it to an intent
+3. the resident daemon plays a short local WAV
+
+That keeps `ai-voice` passive: no UI, no pet runtime, no dynamic TTS during normal use, no marketplace ceremony, and no host-specific audio rules outside this repo.
 
 ## Core model
 
@@ -83,7 +96,7 @@ For the lowest latency, keep the resident player running:
 .\ai-voice-daemon.ps1
 ```
 
-In another terminal, call the normal notification scripts. They will enqueue playback to the resident player when it is available and fall back to direct playback when it is not.
+In another terminal, call the normal notification scripts. They enqueue playback to the resident player when it is available, which avoids making the host wait for the clip to finish. If the daemon is not running, the scripts fall back to direct playback so the tool still works.
 
 ## Event routing
 

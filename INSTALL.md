@@ -31,11 +31,13 @@ Then test audible playback:
 .\copilot-notify.ps1 -Intent complete
 ```
 
-For lower latency, keep the daemon running in another terminal:
+For normal daily use, keep the daemon running in another terminal:
 
 ```powershell
 .\ai-voice-daemon.ps1
 ```
+
+The daemon is the lightweight path. Notify scripts can return quickly by placing a tiny request in the local queue instead of making the calling assistant wait for the WAV to finish.
 
 ## Wire an assistant
 
@@ -48,6 +50,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "C:\dev\ai-voice\copilot-not
 ```
 
 For platform-specific examples, use [`INTEGRATIONS.md`](INTEGRATIONS.md).
+
+The integration should stay boring on purpose: one command per event, no generated speech during the event, no pet process, and no duplicated routing logic in the host.
 
 ## Do users need a skill?
 

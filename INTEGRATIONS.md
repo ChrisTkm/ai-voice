@@ -25,6 +25,19 @@ cd C:\dev\ai-voice
 
 Then call the normal `*-notify.ps1` scripts from other tools. They queue into the daemon when it is alive, and fall back to direct playback when it is not.
 
+For the best feel, treat the daemon as the normal mode. Without it, direct playback still works, but the calling hook may wait until the selected clip finishes. With the daemon alive, hooks only enqueue a small JSON request and return quickly.
+
+## Flow contract
+
+Keep integrations thin:
+
+- one event from the host
+- one call to a notify script
+- one local intent resolved by this repo
+- one short local audio clip
+
+Avoid adding setup steps or host-side rules unless they remove delay from normal playback. `ai-voice` should remain a passive layer that gives feedback and disappears.
+
 ## Intents
 
 Use these intent names as the stable API:

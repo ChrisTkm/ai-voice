@@ -92,7 +92,7 @@ $soundTarget = Join-Path $root $intent
 
 if (-not (Test-PlayableTarget $soundTarget)) {
     Write-NotifyLog "fallback intent=$intent target=$soundTarget"
-    $soundTarget = Join-Path $root "stop"
+    $soundTarget = Join-Path $root "complete"
 }
 
 if (-not (Test-PlayableTarget $soundTarget)) {

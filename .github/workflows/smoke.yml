@@ -1,0 +1,23 @@
+name: Smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - release/**
+
+jobs:
+  smoke:
+    name: PowerShell smoke test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run smoke test
+        shell: pwsh
+        run: .\tests\smoke.ps1

@@ -72,7 +72,7 @@ if ($NotificationJson) {
 if (-not $Intent) { exit 0 }
 
 $soundTarget = Join-Path $root $Intent
-$fallbackTarget = Join-Path $root "stop"
+$fallbackTarget = Join-Path $root "complete"
 
 if (-not (Test-PlayableTarget $soundTarget)) {
     Write-NotifyLog "fallback intent=$Intent target=$soundTarget"

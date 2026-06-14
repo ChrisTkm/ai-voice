@@ -21,10 +21,32 @@ function Write-DaemonLog {
 $runtimeDir = Get-AiVoiceRuntimeDir -Root $Root
 $queueDir = Join-Path $runtimeDir "queue"
 $pidFile = Join-Path $runtimeDir "daemon.pid"
+$eventFile = Join-Path $runtimeDir "last_event.json"
 
 New-Item -ItemType Directory -Force -Path $queueDir | Out-Null
 Set-Content -LiteralPath $pidFile -Value $PID -Encoding ASCII
 Write-DaemonLog "started pid=$PID root=$Root"
+
+function Write-AiVoiceLastEvent {
+    param(
+        [string]$Intent,
+        [string]$Event,
+        [int]$ExitCode
+    )
+    try {
+        $payload = [ordered]@{
+            intent = $Intent
+            event  = $Event
+            exit   = $ExitCode
+            ts     = (Get-Date).ToUniversalTime().ToString("o")
+        }
+        $tmp = "$eventFile.tmp"
+        $payload | ConvertTo-Json -Compress | Set-Content -LiteralPath $tmp -Encoding UTF8
+        Move-Item -LiteralPath $tmp -Destination $eventFile -Force
+    } catch {
+        Write-DaemonLog "last_event write failed: $($_.Exception.Message)"
+    }
+}
 
 $lastWarmup = [DateTime]::MinValue
 
@@ -48,6 +70,7 @@ try {
                     $target = Join-Path $Root $intent
                     $exitCode = Invoke-AiVoicePlayback -Target $target
                     Write-DaemonLog "played intent=$intent event=$($payload.event) exit=$exitCode"
+                    Write-AiVoiceLastEvent -Intent $intent -Event ([string]$payload.event) -ExitCode $exitCode
                 }
             } catch {
                 Write-DaemonLog "request failed file=$($item.Name) error=$($_.Exception.Message)"

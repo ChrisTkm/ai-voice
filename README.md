@@ -4,7 +4,7 @@
 >
 > Short, intentional, human-friendly audio feedback for Claude, Codex, Copilot, or any other tool that can emit an event.
 
-`ai-voice` is a small local audio layer that turns machine events into clear audible signals. It is not a general TTS reader and it is not tied to one editor, one extension, or one AI product.
+`ai-voice` is a small local audio layer that turns machine events into clear audible signals. It focuses on short workflow cues, host-agnostic scripts, and fast local playback for daily agent work.
 
 ## Why this exists
 
@@ -17,7 +17,7 @@ Design goals:
 - pleasant voice identity over generic system TTS
 - short clips instead of long spoken output
 - one small command from scripts, hooks, or editor automation
-- no hard dependency on `Signal_AI` or any single host application
+- host-agnostic integration through simple notification scripts
 
 ## Release direction
 
@@ -29,7 +29,7 @@ The happy path is:
 2. one notify script maps it to an intent
 3. the resident daemon plays a short local WAV
 
-That keeps `ai-voice` passive: no UI, no pet runtime, no dynamic TTS during normal use, no marketplace ceremony, and no host-specific audio rules outside this repo.
+That keeps `ai-voice` passive: the host reports what happened, the notify script chooses an intent, and the audio layer handles playback locally.
 
 ## Core model
 
@@ -163,20 +163,17 @@ node .\generate-narakeet.mjs --overwrite
 
 If the audio device clips the first syllable after being idle, the player warms up the device with a short silent WAV before playing the selected clip.
 
-## Integration boundary
+## Integration model
 
-`ai-voice` should stay decoupled from editor-specific or AI-specific products.
+`ai-voice` is a local audio backend for tools that can emit workflow events.
 
-Valid relationship:
+The integration contract is intentionally small:
 
-- an external tool invokes `ai-voice`
+- call one notification script
+- pass an explicit `intent` or a small event payload
+- let `ai-voice` map that signal to a short local clip
 
-Invalid relationship:
-
-- `ai-voice` depending on the internal logic of another project
-- another project embedding audio-domain rules that belong here
-
-In practice, `Signal_AI`, Claude, Codex, Copilot, or any future tool can call these scripts, but `ai-voice` remains its own small audio backend.
+Claude, Codex, Copilot, editors, shell scripts, and future agents can all use the same pattern. Product-specific logic stays in the host; audio intent mapping and playback stay in this repo.
 
 ## License
 

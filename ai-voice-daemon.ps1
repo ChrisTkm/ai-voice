@@ -1,7 +1,8 @@
 param(
     [string]$Root = (Split-Path -Parent $MyInvocation.MyCommand.Path),
     [int]$PollMs = 100,
-    [int]$WarmupIntervalSeconds = 20
+    [int]$WarmupIntervalSeconds = 20,
+    [int]$MaxQueueAgeMinutes = 10
 )
 
 $playerScript = Join-Path $Root "ai-voice-player.ps1"
@@ -54,7 +55,11 @@ try {
     while ($true) {
         $now = Get-Date
         if (($now - $lastWarmup).TotalSeconds -ge $WarmupIntervalSeconds) {
-            Invoke-AiVoiceWarmup
+            try {
+                Invoke-AiVoiceWarmup
+            } catch {
+                Write-DaemonLog "warmup failed: $($_.Exception.Message)"
+            }
             $lastWarmup = $now
         }
 
@@ -65,6 +70,19 @@ try {
             try {
                 $payload = Get-Content -LiteralPath $item.FullName -Raw | ConvertFrom-Json
                 $intent = [string]$payload.intent
+                $createdAtUtc = $item.CreationTimeUtc
+
+                if ($payload.createdAt) {
+                    try {
+                        $createdAtUtc = ([DateTimeOffset]::Parse([string]$payload.createdAt)).UtcDateTime
+                    } catch {
+                    }
+                }
+
+                if ($MaxQueueAgeMinutes -gt 0 -and ((Get-Date).ToUniversalTime() - $createdAtUtc).TotalMinutes -gt $MaxQueueAgeMinutes) {
+                    Write-DaemonLog "dropped stale intent=$intent event=$($payload.event) file=$($item.Name)"
+                    continue
+                }
 
                 if ($intent) {
                     $target = Join-Path $Root $intent

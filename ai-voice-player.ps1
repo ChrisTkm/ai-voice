@@ -39,12 +39,12 @@ function New-AiVoiceSilentWavStream {
     $writer.Write([System.Text.Encoding]::ASCII.GetBytes("WAVE"))
     $writer.Write([System.Text.Encoding]::ASCII.GetBytes("fmt "))
     $writer.Write([int]16)
-    $writer.Write([short]1)
-    $writer.Write([short]$channels)
+    $writer.Write([System.Int16]1)
+    $writer.Write([System.Int16]$channels)
     $writer.Write([int]$sampleRate)
     $writer.Write([int]$byteRate)
-    $writer.Write([short]$blockAlign)
-    $writer.Write([short]$bitsPerSample)
+    $writer.Write([System.Int16]$blockAlign)
+    $writer.Write([System.Int16]$bitsPerSample)
     $writer.Write([System.Text.Encoding]::ASCII.GetBytes("data"))
     $writer.Write([int]$dataSize)
     $writer.Write([byte[]]::new($dataSize))
@@ -80,7 +80,7 @@ function Invoke-AiVoicePlayback {
     $extension = [System.IO.Path]::GetExtension($path).ToLowerInvariant()
 
     if ($extension -eq ".wav") {
-        Invoke-AiVoiceWarmup
+        try { Invoke-AiVoiceWarmup } catch { }
         $player = [System.Media.SoundPlayer]::new($path)
         try {
             $player.Load()
@@ -143,8 +143,33 @@ function Test-AiVoiceDaemon {
 
     try {
         $daemonPid = [int](Get-Content -LiteralPath $pidFile -Raw)
-        return [bool](Get-Process -Id $daemonPid -ErrorAction SilentlyContinue)
+        $process = Get-Process -Id $daemonPid -ErrorAction SilentlyContinue
+
+        if (-not $process) {
+            Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+            return $false
+        }
+
+        $scriptPath = Join-Path $Root "ai-voice-daemon.ps1"
+        $processInfo = Get-CimInstance Win32_Process -Filter "ProcessId = $daemonPid" -ErrorAction SilentlyContinue
+
+        if ($processInfo -and $processInfo.CommandLine) {
+            if ($processInfo.CommandLine.IndexOf($scriptPath, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+                return $true
+            }
+
+            Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+            return $false
+        }
+
+        if ($process.ProcessName -in @("powershell", "pwsh")) {
+            return $true
+        }
+
+        Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+        return $false
     } catch {
+        Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
         return $false
     }
 }

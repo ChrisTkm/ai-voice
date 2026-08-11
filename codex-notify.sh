@@ -89,6 +89,12 @@ if ! ai_voice_has_playable_target "$sound_target" 2>/dev/null; then
 fi
 
 # Detach playback so Codex can finish the turn without waiting for the clip.
-nohup "$0" --play "$sound_target" "$event_type" "$intent" >/dev/null 2>&1 &
+# setsid -f moves it out of the hook's process group; some hosts wait for all
+# descendants even when a plain background process is used.
+if command -v setsid >/dev/null 2>&1; then
+    setsid -f "$0" --play "$sound_target" "$event_type" "$intent" >/dev/null 2>&1
+else
+    nohup "$0" --play "$sound_target" "$event_type" "$intent" >/dev/null 2>&1 &
+fi
 write_log "queued intent=$intent event=$event_type target=$sound_target"
 exit 0

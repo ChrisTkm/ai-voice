@@ -233,6 +233,25 @@ Supported `copilot-notify.ps1` event mappings:
 - `agent.blocked` -> `blocked`
 - `agent.permission` -> `permission`
 
+## Codex on Linux
+
+Codex supports a user-level `notify` command and sends it one JSON argument when
+an agent turn completes. Add this top-level key to `~/.codex/config.toml`:
+
+```toml
+notify = ["/home/you/dev/ai-voice/codex-notify.sh"]
+```
+
+Use an absolute path and restart Codex after changing the configuration. The
+Linux adapter maps `agent-turn-complete` to the `complete` intent and returns
+immediately while the selected clip plays in a detached process.
+
+Test the adapter directly:
+
+```bash
+./codex-notify.sh '{"type":"agent-turn-complete"}'
+```
+
 ## What assistants should not do
 
 - Do not move audio-domain mapping logic into a Copilot or Claude config.

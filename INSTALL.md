@@ -4,7 +4,8 @@
 
 ## Requirements
 
-- Windows with PowerShell
+- Windows with PowerShell, or Linux with Bash
+- On Linux: `paplay`, `pw-play`, `ffplay`, or `aplay`
 - A working audio output device
 - Node.js only when regenerating Narakeet clips
 
@@ -50,6 +51,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "C:\dev\ai-voice\copilot-not
 ```
 
 For platform-specific examples, use [`INTEGRATIONS.md`](INTEGRATIONS.md).
+
+On Linux, Codex can invoke the native adapter directly:
+
+```toml
+notify = ["/absolute/path/to/ai-voice/codex-notify.sh"]
+```
 
 The integration should stay boring on purpose: one command per event, no generated speech during the event, no pet process, and no duplicated routing logic in the host.
 

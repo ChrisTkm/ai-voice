@@ -61,6 +61,7 @@ Current intents:
 ai-voice/
 |- claude-notify.ps1
 |- codex-notify.ps1
+|- codex-notify.sh
 |- copilot-notify.ps1
 |- generate-narakeet.mjs
 |- ai-voice-player.ps1
@@ -127,6 +128,10 @@ Accepts `-NotificationJson`. Maps Codex event types:
 - `agent-turn-stop` -> `stop`
 
 Custom payloads can pass `intent` or `sound` to target any folder directly.
+
+On Linux, `codex-notify.sh` provides the same event mapping and uses the
+available PulseAudio, PipeWire, FFmpeg, or ALSA player. It detaches playback so
+the Codex turn is not held open while the clip plays.
 
 ### VS Code Copilot (`copilot-notify.ps1`)
 

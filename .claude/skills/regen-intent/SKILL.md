@@ -1,33 +1,10 @@
 ---
 name: regen-intent
-description: Regenera los .wav de uno o varios intents vía Narakeet sin tocar los demás. Úsalo cuando se cambien líneas en narakeet-lines.csv o se quiera reemplazar audio de un intent concreto. Args: lista de intents separados por espacio (ej. "complete error"). Sin args, lista los intents disponibles y pregunta.
-disable-model-invocation: true
+description: Regenerar WAV específicos de ai-voice con Narakeet después de revisar sus frases y el alcance del gasto.
 ---
 
-# /regen-intent
+# Regenerar audio
 
-Regenera audio solo para los intents indicados. Reutiliza la lógica de skip-on-exists de `generate-narakeet.mjs`: borrando los .wav del intent objetivo, el generador rellena lo faltante sin pisar el resto.
+La reproducción normal no usa Narakeet. Para regenerar, lee `narakeet-lines.csv` o `reminders/narakeet-lines.csv`, identifica exactamente las filas solicitadas y crea un CSV temporal con encabezado `intent,file,text`. Comprueba que `NARAKEET_API_KEY` exista sin mostrar su valor. Explica qué WAV se reemplazarán y que la operación consume créditos antes de llamar a la API.
 
-## Args
-
-`$ARGUMENTS` = uno o más nombres de intent separados por espacio (ej. `complete`, `error blocked`).
-
-Si está vacío: lista los directorios de intents existentes y pregunta cuál(es). No avances sin elección explícita.
-
-## Pasos
-
-1. Verifica que `$env:NARAKEET_API_KEY` está seteado (el usuario lo tiene configurado; si falta, detente y dile).
-2. Para cada intent en `$ARGUMENTS`:
-   - Comprueba que existe la carpeta `<intent>/` en la raíz del repo.
-   - Comprueba que el intent aparece como valor de la columna `intent` en `narakeet-lines.csv`. Si no, detente y pregunta.
-   - **Confirma con el usuario antes de borrar** — la regeneración consume créditos de Narakeet y reemplaza audio en vivo. Muestra cuántos .wav se borrarán por intent.
-   - Borra los `.wav` dentro de `<intent>/`.
-3. Ejecuta: `node .\generate-narakeet.mjs` (sin `--overwrite`). El generador solo regenera lo que no existe — los otros intents se mantienen intactos.
-4. Verifica que los .wav nuevos están en disco (`Get-ChildItem <intent>\*.wav`).
-5. Reporta los archivos creados y sugiere probar con `/test-intent <intent>` si está disponible.
-
-## No hacer
-
-- No uses `--overwrite` directamente (regenera todo el CSV, gasta créditos innecesariamente).
-- No modifiques `narakeet-lines.csv` desde este skill. Si el texto cambia, el usuario lo edita primero.
-- No invoques el daemon ni reproduzcas audio aquí — eso es `/test-intent`.
+Usa `node generate-narakeet.mjs --lines <csv-temporal> --overwrite` para agentes. Para recordatorios agrega `--output-dir reminders`. Verifica los archivos creados y conserva los anteriores si la llamada falla.

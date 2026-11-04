@@ -6,6 +6,6 @@
 .env.*
 
 # Local Claude Code settings
-.claude/
+
 NOTEBOOK.md
 reminders/

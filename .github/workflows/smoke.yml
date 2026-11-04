@@ -2,22 +2,28 @@ name: Smoke
 
 on:
   pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - main
-      - release/**
+    branches: [main]
 
 jobs:
   smoke:
-    name: PowerShell smoke test
-    runs-on: windows-latest
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run smoke test
-        shell: pwsh
-        run: .\tests\smoke.ps1
+      - uses: actions/checkout@v4
+      - name: Check scripts
+        run: |
+          bash -n ai-voice.sh ai-voice-player.sh codex-notify.sh claude-notify.sh
+          node --check generate-narakeet.mjs
+      - name: Check audio catalog
+        run: |
+          python3 - <<'PY'
+          import csv
+          from pathlib import Path
+          for base, catalog in [(Path('.'), Path('narakeet-lines.csv')), (Path('reminders'), Path('reminders/narakeet-lines.csv'))]:
+              with catalog.open(newline='') as source:
+                  rows = list(csv.DictReader(source))
+              missing = [str(base / row['intent'] / row['file']) for row in rows if not (base / row['intent'] / row['file']).is_file()]
+              if missing:
+                  raise SystemExit('Missing audio: ' + ', '.join(missing))
+              print(f'{catalog}: {len(rows)} clips')
+          PY

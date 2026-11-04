@@ -1,190 +1,53 @@
 # ai-voice
 
-> Local voice cues for agent workflows.
->
-> Short, intentional, human-friendly audio feedback for Claude, Codex, Copilot, or any other tool that can emit an event.
+`ai-voice` reproduce avisos de voz cortos a partir de eventos de asistentes y otras herramientas. Sirve para seguir varias sesiones sin tener que mirar cada una: un sonido indica que terminó un turno, llegó una pregunta o se necesita permiso.
 
-`ai-voice` is a small local audio layer that turns machine events into clear audible signals. It is not a general TTS reader and it is not tied to one editor, one extension, or one AI product.
+Los avisos son WAV locales. La reproducción no requiere conexión, claves de API ni un servicio residente. Narakeet se usa únicamente para crear nuevos clips.
 
-## Why this exists
+## Probarlo
 
-When an agent is working in the background, visual feedback is easy to miss. `ai-voice` solves that with short clips mapped to meaningful intents like "thinking", "complete", or "permission".
+En Linux, necesitas Bash, `paplay` y una salida PulseAudio o PipeWire disponible:
 
-Design goals:
-
-- local-first and low-latency
-- passive by default: the tool should speak, then get out of the way
-- pleasant voice identity over generic system TTS
-- short clips instead of long spoken output
-- one small command from scripts, hooks, or editor automation
-- no hard dependency on `Signal_AI` or any single host application
-
-## Release direction
-
-For `v0.1.0`, "lightweight" means lightweight in system flow, not tiny in audio size.
-
-The happy path is:
-
-1. a host emits an event
-2. one notify script maps it to an intent
-3. the resident daemon plays a short local WAV
-
-That keeps `ai-voice` passive: no UI, no pet runtime, no dynamic TTS during normal use, no marketplace ceremony, and no host-specific audio rules outside this repo.
-
-## Core model
-
-The unit of playback is an `intent`.
-
-Each intent maps to a folder with one or more numbered WAV files such as `1.wav`, `2.wav`, and `3.wav`. The player randomly selects one file from the target folder. MP3 files are still accepted as a fallback while migrating older audio sets.
-
-Current intents:
-
-- `notif`: user input is needed
-- `complete`: a task finished
-- `stop`: fallback completion sound
-- `thinking`: work started or analysis is in progress
-- `error`: something failed
-- `permission`: approval or access is needed
-- `warning`: something should be reviewed before continuing
-- `blocked`: progress depends on more information
-- `success`: a check, build, or action succeeded
-- `long_task`: a longer task is starting
-- `resume`: work is being resumed
-- `handoff`: work is ready for human review or ownership transfer
-- `wakeup`: a scheduled or automated run started cold
-- `commit`: git checkpoint or commit completed
-- `clarify`: a specific clarification is needed
-
-## Repository layout
-
-```text
-ai-voice/
-|- claude-notify.ps1
-|- codex-notify.ps1
-|- codex-notify.sh
-|- copilot-notify.ps1
-|- generate-narakeet.mjs
-|- ai-voice-player.ps1
-|- narakeet-lines.csv
-|- voice-library.json
-|- thinking/
-|- complete/
-|- permission/
-|- ...
+```bash
+./ai-voice.sh agent complete
+./ai-voice.sh agent permission
+./ai-voice.sh reminder iva
 ```
 
-## Quick usage
+`agent` reproduce una variante aleatoria de la carpeta indicada en la raíz. `reminder` busca en `reminders/`. Los recordatorios dependen de un calendario o programador externo: este proyecto solo reproduce el aviso. Por defecto usa la salida de audio del sistema; `AI_VOICE_SINK` permite elegir otra salida por nombre.
 
-Run a sound directly from PowerShell:
+## Conectar herramientas
 
-```powershell
-.\copilot-notify.ps1 -Intent thinking
-.\copilot-notify.ps1 -Intent complete
-.\copilot-notify.ps1 -NotificationJson '{"event":"task.error"}'
+Una herramienta puede llamar a `ai-voice.sh` con un intent. Los adaptadores incluidos traducen los eventos propios de Codex y Claude Code:
+
+```toml
+# ~/.codex/config.toml
+notify = ["/ruta/absoluta/ai-voice/codex-notify.sh"]
 ```
 
-The same idea applies to any host application: emit a small event or pass an explicit `intent`, and `ai-voice` handles playback.
+En Claude Code, configura los hooks `Notification` y `Stop` para ejecutar `/ruta/absoluta/ai-voice/claude-notify.sh`. El adaptador recibe el JSON por stdin. También entiende `SubagentStop`, `SessionStart` y algunos eventos `PostToolUse`. Conserva los hooks existentes al editar la configuración.
 
-For setup instructions you can hand to Claude Code, GitHub Copilot in VS Code, or another assistant, see [`INTEGRATIONS.md`](INTEGRATIONS.md).
+Un evento `complete` significa que terminó el turno del asistente; no verifica si la tarea entera tuvo éxito. Para Neovim, otras TUI o scripts, llama al comando directamente cuando ocurra el evento que te interesa.
 
-For first-time installation, see [`INSTALL.md`](INSTALL.md).
+## Biblioteca de voz
 
-Useful release docs:
+Los 112 WAV de agentes están organizados en 14 intents; hay 21 WAV de recordatorios. Los textos fuente están en `narakeet-lines.csv` y `reminders/narakeet-lines.csv`. `regen-pending.csv` registra dos frases cuyo texto cambió pero cuyo WAV aún no se regeneró.
 
-- [`TESTING.md`](TESTING.md): smoke tests and audible QA
-- [`SECURITY.md`](SECURITY.md): local runtime, API key, and integration boundaries
-- [`RELEASE.md`](RELEASE.md): `v0.1.0` release intent and merge checklist
+El generador necesita Node.js. Omite los archivos existentes y **solo pide `NARAKEET_API_KEY` si hay algo que generar**:
 
-For the lowest latency, keep the resident player running:
-
-```powershell
-.\ai-voice-daemon.ps1
+```bash
+node generate-narakeet.mjs
+node generate-narakeet.mjs --lines reminders/narakeet-lines.csv --output-dir reminders
 ```
 
-In another terminal, call the normal notification scripts. They enqueue playback to the resident player when it is available, which avoids making the host wait for the clip to finish. If the daemon is not running, the scripts fall back to direct playback so the tool still works.
+Para reemplazar clips, prepara un CSV con solo las filas deseadas y usa `--lines archivo.csv --overwrite`. Regenerar consume créditos de Narakeet; revisa primero el alcance. La clave se proporciona mediante una variable de entorno del shell, no dentro del repo.
 
-## Event routing
+## Verificación
 
-### Claude Code (`claude-notify.ps1`)
-
-Reads JSON from stdin. Maps Claude Code hook events automatically:
-
-- `Notification` + "permission" message -> `permission`
-- `Notification` -> `notif`
-- `Stop` -> `complete`
-- `SubagentStop` -> `handoff`
-- `SessionStart` startup -> `wakeup`
-- `SessionStart` resume -> `resume`
-- `PostToolUse` git commit -> `commit`
-
-Configured in `~/.claude/settings.json` under `hooks`.
-
-### Codex (`codex-notify.ps1`)
-
-Accepts `-NotificationJson`. Maps Codex event types:
-
-- `agent-turn-user-prompt` -> `notif`
-- `agent-turn-complete` -> `complete`
-- `agent-turn-stop` -> `stop`
-
-Custom payloads can pass `intent` or `sound` to target any folder directly.
-
-On Linux, `codex-notify.sh` provides the same event mapping and uses the
-available PulseAudio, PipeWire, FFmpeg, or ALSA player. It detaches playback so
-the Codex turn is not held open while the clip plays.
-
-### VS Code Copilot (`copilot-notify.ps1`)
-
-Accepts `-Intent` or `-NotificationJson`. Maps VS Code events:
-
-- `chat.submit` -> `thinking`
-- `chat.response` -> `complete`
-- `chat.stop` -> `stop`
-- `inline.accept` -> `success`
-- `inline.reject` -> `stop`
-- `task.start` -> `long_task`
-- `task.complete` -> `complete`
-- `task.error` -> `error`
-- `agent.handoff` -> `handoff`
-- `agent.blocked` -> `blocked`
-- `agent.permission` -> `permission`
-
-## Audio generation
-
-This project currently favors curated short phrases over long dynamic TTS. The main reason is quality: the selected Narakeet voice works well for short notifications, while long free-form TTS is slower and less pleasant for repeated daily use.
-
-Add or edit phrases in `narakeet-lines.csv`, then set your Narakeet API key and run:
-
-```powershell
-$env:NARAKEET_API_KEY = "<your-real-narakeet-api-key>"
-node .\generate-narakeet.mjs
+```bash
+bash -n ai-voice.sh ai-voice-player.sh codex-notify.sh claude-notify.sh
+node --check generate-narakeet.mjs
+./ai-voice.sh agent complete
 ```
 
-By default the script uses the `alejandra` voice and writes WAV files into the intent folders. WAV generation uses Narakeet's long-content polling API, so each clip can take a few seconds to finish. Existing files are skipped unless you pass `--overwrite`.
-
-```powershell
-node .\generate-narakeet.mjs --overwrite
-```
-
-If the audio device clips the first syllable after being idle, the player warms up the device with a short silent WAV before playing the selected clip.
-
-## Integration boundary
-
-`ai-voice` should stay decoupled from editor-specific or AI-specific products.
-
-Valid relationship:
-
-- an external tool invokes `ai-voice`
-
-Invalid relationship:
-
-- `ai-voice` depending on the internal logic of another project
-- another project embedding audio-domain rules that belong here
-
-In practice, `Signal_AI`, Claude, Codex, Copilot, or any future tool can call these scripts, but `ai-voice` remains its own small audio backend.
-
-## License
-
-Copyright (c) 2026 Albornoz Studio. All rights reserved.
-
-This repository and its contents are a product of Albornoz Studio. See `LICENSE` for details.
+Los logs locales de los adaptadores están ignorados por Git. Si un aviso no suena, comprueba el dispositivo predeterminado y prueba primero el comando directo.

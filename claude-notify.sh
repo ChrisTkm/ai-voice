@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Linux port of claude-notify.ps1. Reads a Claude Code hook payload from
-# stdin, maps it to an ai-voice intent, and plays the clip directly
-# (no resident daemon on this port yet).
+# Reads a Claude Code hook payload from stdin and plays its mapped intent.
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 player_script="$root/ai-voice-player.sh"

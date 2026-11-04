@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Linux playback backend for ai-voice. Mirrors ai-voice-player.ps1's contract
-# (pick a random clip from an intent folder, play it) using PulseAudio/ALSA
-# tooling instead of System.Media.SoundPlayer / winmm.dll.
+# Pick a random local clip and play it through PulseAudio/PipeWire.
 
 ai_voice_pick_audio_file() {
     local target="$1"
@@ -43,18 +41,14 @@ ai_voice_play() {
     local path
     path="$(ai_voice_pick_audio_file "$target")" || return 3
 
-    if command -v paplay >/dev/null 2>&1; then
-        paplay "$path" >/dev/null 2>&1 && return 0
+    local notification_sink="${AI_VOICE_SINK:-}"
+    command -v paplay >/dev/null 2>&1 || return 2
+    # WirePlumber may remember a music route for generic paplay streams.
+    # Give cues their own identity so they follow the chosen/default sink.
+    local pulse_props="application.name=ai-voice media.role=event"
+    if [ -n "$notification_sink" ]; then
+        PULSE_PROP="$pulse_props" paplay --device="$notification_sink" "$path" >/dev/null 2>&1
+    else
+        PULSE_PROP="$pulse_props" paplay "$path" >/dev/null 2>&1
     fi
-    if command -v pw-play >/dev/null 2>&1; then
-        pw-play "$path" >/dev/null 2>&1 && return 0
-    fi
-    if command -v ffplay >/dev/null 2>&1; then
-        ffplay -nodisp -autoexit -loglevel quiet "$path" >/dev/null 2>&1 && return 0
-    fi
-    if command -v aplay >/dev/null 2>&1; then
-        aplay -q "$path" >/dev/null 2>&1 && return 0
-    fi
-
-    return 2
 }

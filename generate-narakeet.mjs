@@ -18,17 +18,10 @@ for (let i = 2; i < process.argv.length; i += 1) {
 const apiKey = args.get("api-key") || process.env.NARAKEET_API_KEY;
 const voice = args.get("voice") || "alejandra";
 const format = (args.get("format") || "wav").toLowerCase();
-const linesPath = path.join(root, args.get("lines") || "narakeet-lines.csv");
+const linesPath = path.resolve(root, args.get("lines") || "narakeet-lines.csv");
+const outputRoot = path.resolve(root, args.get("output-dir") || ".");
 const overwrite = args.has("overwrite");
 const pollIntervalMs = Number(args.get("poll-interval-ms") || 5000);
-
-if (!apiKey) {
-  throw new Error("Set NARAKEET_API_KEY before generating audio.");
-}
-
-if (/^(tu-api-key|your-api-key|api-key|changeme|replace-me)$/i.test(apiKey.trim())) {
-  throw new Error("NARAKEET_API_KEY still contains a placeholder. Set it to your real Narakeet API key.");
-}
 
 if (!["wav", "mp3"].includes(format)) {
   throw new Error(`Unsupported format: ${format}. Use wav or mp3.`);
@@ -194,6 +187,7 @@ async function requestPollingAudio(url, text, outputLabel) {
 }
 
 const lines = parseCsv(await readFile(linesPath, "utf8"));
+const pending = [];
 
 for (const line of lines) {
   const intent = line.intent?.trim();
@@ -205,22 +199,37 @@ for (const line of lines) {
     continue;
   }
 
-  const targetDir = path.join(root, intent);
+  if (!/^[a-zA-Z0-9_-]+$/.test(intent) || !/^[a-zA-Z0-9_-]+\.(wav|mp3)$/i.test(file)) {
+    throw new Error(`Invalid audio target: ${intent}/${file}`);
+  }
+  const targetDir = path.join(outputRoot, intent);
   const outputFile = targetName(file, format);
   const targetFile = path.join(targetDir, outputFile);
 
-  await mkdir(targetDir, { recursive: true });
-
   if (!overwrite && (await exists(targetFile))) {
-    console.log(`Skipping existing: ${intent}/${outputFile}`);
     continue;
   }
+
+  pending.push({ targetDir, targetFile, text, outputLabel: `${intent}/${outputFile}` });
+}
+
+if (pending.length === 0) {
+  console.log("All audio files already exist. Nothing to generate.");
+  process.exit(0);
+}
+
+if (!apiKey || /^(tu-api-key|your-api-key|api-key|changeme|replace-me)$/i.test(apiKey.trim())) {
+  console.error(`${pending.length} audio file(s) need generation. Set NARAKEET_API_KEY in this shell, then rerun the command.`);
+  process.exit(2);
+}
+
+for (const { targetDir, targetFile, text, outputLabel } of pending) {
+  await mkdir(targetDir, { recursive: true });
 
   const url = new URL(`https://api.narakeet.com/text-to-speech/${format}`);
   url.searchParams.set("voice", voice);
 
-  console.log(`Generating: ${intent}/${outputFile}`);
-  const outputLabel = `${intent}/${outputFile}`;
+  console.log(`Generating: ${outputLabel}`);
   const bytes =
     format === "wav"
       ? await requestPollingAudio(url, text, outputLabel)
